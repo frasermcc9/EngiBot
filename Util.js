@@ -78,5 +78,12 @@ module.exports = class Util {
 
 	static tab() {
 		return "⠀⠀";
-	}
+    }
+    /**
+     * delimits a numeric string
+     * @param {string} txt 
+     */
+    static delimit(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 };
