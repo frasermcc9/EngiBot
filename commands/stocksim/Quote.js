@@ -40,14 +40,16 @@ module.exports = class QuoteCommand extends Command {
 			const output = new MessageEmbed()
 				.setTitle(`Data for ${quote.companyName} (${quote.primaryExchange}: ${quote.symbol})`)
 				.setDescription(`**${quote.latestPrice}** USD${Util.tab() + "||" + Util.tab()} ${operator} ${quote.change} (${quote.changePercent * 100}%) ${emoji}`)
-				.addField(Util.tab(), `**Open: $** ${quote.open}\n**High: $** ${quote.high}\n**Market Cap: $**${quote.marketCap}`, true)
-				.addField(Util.tab(), `**Close: $**${quote.close}\n**Low: $**${quote.low}\n**P/E Ratio: **${quote.peRatio}`, true)
+				.addField(Util.tab() + Util.tab() + Util.tab(), `**Open: $** ${quote.open}\n**High: $** ${quote.high}\n**P/E Ratio: **${quote.peRatio}\n**Avg Vol: **${quote.avgTotalVolume}` + Util.tab(), true)
+				.addField(Util.tab() + Util.tab() + Util.tab(), `**Close: $**${quote.close}\n**Low: $**${quote.low}\n**Market Cap: $**${Util.delimit(quote.marketCap)}\n**52Wk High: $**${Util.delimit(quote.week52High)}`, true)
 				.setFooter(`Data provided by IEXCloud. Price Source: ${quote.latestSource}`)
 				.setColor(color);
 			if (img) {
 				output.setThumbnail(img.url);
 			}
 			return msg.say(output);
+		} else {
+			return msg.say("I cannot figure out what symbol that refers to.");
 		}
 	}
 };
