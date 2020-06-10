@@ -7,7 +7,7 @@ module.exports = class QuoteCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: "quote",
-			aliases: ["td", "today", "quo"],
+			aliases: ["td", "today", "quo", "$q"],
 			memberName: "quote",
 			group: "stocksim",
 			description: "Get a quote for a symbol",
@@ -25,7 +25,7 @@ module.exports = class QuoteCommand extends Command {
 	/**
 	 * @param {CommandoMessage} msg
 	 * @param {object} param1
-	 * @param {GuildMember} param1.symbol
+	 * @param {string} param1.symbol
 	 */
 	async run(msg, { symbol }) {
 		const sym = new Symbol(symbol);
@@ -40,8 +40,16 @@ module.exports = class QuoteCommand extends Command {
 			const output = new MessageEmbed()
 				.setTitle(`Data for ${quote.companyName} (${quote.primaryExchange}: ${quote.symbol})`)
 				.setDescription(`**${quote.latestPrice}** USD${Util.tab() + "||" + Util.tab()} ${operator} ${quote.change} (${quote.changePercent * 100}%) ${emoji}`)
-				.addField(Util.tab() + Util.tab() + Util.tab(), `**Open: $** ${quote.open}\n**High: $** ${quote.high}\n**P/E Ratio: **${quote.peRatio}\n**Avg Vol: **${quote.avgTotalVolume}` + Util.tab(), true)
-				.addField(Util.tab() + Util.tab() + Util.tab(), `**Close: $**${quote.close}\n**Low: $**${quote.low}\n**Market Cap: $**${Util.delimit(quote.marketCap)}\n**52Wk High: $**${Util.delimit(quote.week52High)}`, true)
+				.addField(
+					Util.tab() + Util.tab() + Util.tab(),
+					`**Open: $** ${quote.open}\n**High: $** ${quote.high}\n**P/E Ratio: **${quote.peRatio}\n**Avg Vol: **${quote.avgTotalVolume}` + Util.tab(),
+					true
+				)
+				.addField(
+					Util.tab() + Util.tab() + Util.tab(),
+					`**Close: $**${quote.close}\n**Low: $**${quote.low}\n**Market Cap: $**${Util.delimit(quote.marketCap)}\n**52Wk High: $**${Util.delimit(quote.week52High)}`,
+					true
+				)
 				.setFooter(`Data provided by IEXCloud. Price Source: ${quote.latestSource}`)
 				.setColor(color);
 			if (img) {
