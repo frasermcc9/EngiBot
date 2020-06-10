@@ -30,6 +30,7 @@ stockClient.Client.CreateClient({
 	uri: auth.dbUri,
 	newUserValue: 1000,
 });
+stockClient.connect();
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
