@@ -39,7 +39,7 @@ module.exports = class AvatarCommand extends Command {
 	async run(msg, { input, anim }) {
 		return msg.say(
 			new MessageEmbed()
-				.setTitle(`${input.user}'s profile picture!`)
+				.setTitle(`${input.username}'s profile picture!`)
 				.setURL(input.displayAvatarURL({ format: "png", dynamic: anim, size: 4096 }))
 				.setImage(input.displayAvatarURL({ format: "png", dynamic: anim, size: 4096 }))
 				.setColor("RANDOM")
