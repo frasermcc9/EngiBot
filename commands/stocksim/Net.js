@@ -31,7 +31,7 @@ module.exports = class NetCommand extends Command {
 	async run(msg, { member }) {
 		const uid = member.id;
 		const investor = new UserAction(uid);
-		const a = await investor.SetUserCache();
+		await investor.SetUserCache();
 		const data = await Promise.all([investor.NetAssetWorth(), investor.FreeCapital()]);
 		const Total = (data[0] + data[1]).toFixed(2);
 		const StockAssets = data[0].toFixed(2);
@@ -41,7 +41,7 @@ module.exports = class NetCommand extends Command {
 			const output = new MessageEmbed()
 				.setTitle(`${member.nickname || member.displayName}'s Net Worth`)
 				.setDescription(`$${Util.delimit(Total)}`)
-				.addField(`Composition`, `Free Capital: $${Util.delimit(FreeCapital)}\nStocks:$${Util.delimit(StockAssets)}`)
+				.addField(`Composition`, `Free Capital: $${Util.delimit(FreeCapital)}\nStocks: $${Util.delimit(StockAssets)}`)
 				.setColor("#24c718")
 				.setFooter(`Data provided by IEXCloud.`)
 				.setThumbnail(member.user.avatarURL());
