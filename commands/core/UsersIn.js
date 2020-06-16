@@ -15,7 +15,7 @@ module.exports = class UsersInCommand extends Command {
 				{
 					type: "role",
 					prompt: "What role would you like to see the people in?",
-					key: "roleName",
+					key: "role",
 				},
 			],
 		});
