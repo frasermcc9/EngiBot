@@ -32,10 +32,11 @@ module.exports = class PurgeCommand extends Command {
 		msg.channel
 			.bulkDelete(numberOfMessages + 1)
 			.then(async (m) => {
-				const msg = await msg.say(`${m.size} messages deleted successfully.`);
-				return msg.delete(5000);
+				const AlertMessage = await msg.say(`${m.size} messages deleted successfully.`);
+				return AlertMessage.delete({ timeout: 5000 });
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.warn(err);
 				return msg.say("I cannot perform that action.");
 			});
 	}
