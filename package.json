@@ -12,7 +12,8 @@
     "discord.js": "^12.2.0",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
     "sqlite3": "^4.2.0",
-    "stocksim": "git+https://github.com/frasermcc9/stock-sim.git"
+    "stocksim": "git+https://github.com/frasermcc9/stock-sim.git",
+    "string-similarity": "^4.0.1"
   },
   "devDependencies": {
     "eslint": "^7.1.0"

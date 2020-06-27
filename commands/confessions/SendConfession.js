@@ -1,9 +1,11 @@
 "use strict";
 
 const { Command, CommandoMessage } = require("discord.js-commando");
-const { User, MessageEmbed, TextChannel, MessageCollector } = require("discord.js");
+const { MessageEmbed, TextChannel, MessageCollector } = require("discord.js");
 
-const { writeFile, readFile, readFileSync, fstat, writeFileSync } = require("fs");
+const { readFileSync, writeFileSync } = require("fs");
+
+const { findBestMatch } = require("string-similarity");
 
 module.exports = class SendConfessionCommand extends Command {
 	constructor(client) {
@@ -30,7 +32,7 @@ module.exports = class SendConfessionCommand extends Command {
 			Servers.set(name, ServerId);
 		}
 		const ServerNames = Array.from(Servers.keys());
-		const SimplifiedServerNames = ServerNames.map((val) => val.toLowerCase().replace(/\s/g, ""));
+
 		const ServerEmbed = new MessageEmbed()
 			.setTitle("Available Servers")
 			.setColor("#9003fc")
@@ -39,31 +41,31 @@ module.exports = class SendConfessionCommand extends Command {
 		msg.say(ServerEmbed);
 
 		/** @param {CommandoMessage} m */
-		const filter = (m) => SimplifiedServerNames.includes(m.content.toLowerCase().replace(/\s/g, "")) && m.author.id == msg.author.id;
+		const filter = (m) => m.author.id == msg.author.id;
 		new MessageCollector(msg.channel, filter, { time: 15000 })
 			.once("end", (data) => {
 				if (data.size == 0) return msg.say("Opportunity to submit a server expired.");
 			})
 
 			.once("collect", (data) => {
-				const message = data.content.toLowerCase().replace(/\s/g, "");
-				const index = SimplifiedServerNames.findIndex((val) => val == message);
-				const ServerName = ServerNames[index];
+				const ServerName = findBestMatch(data.content, ServerNames).bestMatch.target;
+
 				const ServerId = Servers.get(ServerName);
 				const ServerRequest = this.client.guilds.cache.find((s) => s.id == ServerId);
+				if (!ServerRequest) return msg.say("An error occurred with this server. Contact its admins.");
 				const ConfirmMember = ServerRequest.members.cache.find((m) => m.id == msg.author.id);
 				if (ConfirmMember) {
-					msg.say("You have 15 minutes to submit.");
+					msg.say(`You have 15 minutes to submit a confession to ${ServerName}`);
 					new MessageCollector(msg.channel, (m) => m.author.id == msg.author.id, { time: 15 * 60 * 1000 })
 						.once("end", (data) => {
 							if (data.size == 0) return msg.say("Opportunity to submit confession expired.");
 						})
 
 						.once("collect", (data) => {
-							const ChannelRequest = ServerRequest.channels.cache.find((s) => s.id == ServerData[ServerId].channel);
-							if (ChannelRequest.type == "text") {
-								handlePost(data, ChannelRequest, msg);
-							}
+							const ChannelRequest = ServerRequest.channels.cache.find((s) => s.id == ServerData[ServerId].channel && s.type == "text");
+							if (!ChannelRequest) return msg.say("An error occurred with this server. Contact its admins. Its confession channel does not appear to exist.");
+							ChannelRequest;
+							handlePost(data, ChannelRequest);
 						});
 				} else {
 					return msg.say(`You do not appear to be a member in this server.`);
