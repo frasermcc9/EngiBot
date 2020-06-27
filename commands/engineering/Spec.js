@@ -28,16 +28,18 @@ module.exports = class SpecCommand extends Command {
 	async run(msg, { gpa }) {
 		let spec;
 
-		const n = new Map()
-			.set(0, "Electrical Engineering")
-			.set(1, "Chemical and Materials Engineering")
-			.set(2, "Civil Engineering")
-			.set(3, "Mechanical Engineering")
-			.set(4, "Computer Systems Engineering")
-			.set(5, "Biomedical Engineering")
-			.set(6, "Mechatronics Engineering")
-			.set(7, "Engineering Science")
-			.set(8, "Software Engineering");
+		const n = new Array();
+		n.push(
+			"Electrical Engineering",
+			"Chemical and Materials Engineering",
+			"Civil Engineering",
+			"Mechanical Engineering",
+			"Computer Systems Engineering",
+			"Biomedical Engineering",
+			"Mechatronics Engineering",
+			"Engineering Science",
+			"Software Engineering"
+		);
 
 		switch (gpa) {
 			case 1:
