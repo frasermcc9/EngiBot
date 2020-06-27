@@ -7,8 +7,7 @@ const client = new CommandoClient({
 	commandPrefix: "%",
 	owner: "202917897176219648",
 	invite: "https://discord.gg/rwFhQ9V",
-	disableEveryone: true,
-	unknownCommandResponse: false,
+	disableMentions: "everyone",
 });
 client.registry
 	.registerDefaultTypes()
@@ -18,9 +17,10 @@ client.registry
 		["moderation", "Moderation Commands"],
 		["fun", "Random, fun commands"],
 		["stocksim", "Commands for the stock market simulator"],
+		["confessions", "Commands that allow for anonymous confessions"],
 	])
 	.registerDefaultGroups()
-	.registerDefaultCommands()
+	.registerDefaultCommands({ unknownCommand: false })
 	.registerCommandsIn(path.join(__dirname, "commands"));
 
 const stockClient = require("stocksim");
