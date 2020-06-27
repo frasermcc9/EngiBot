@@ -1,7 +1,7 @@
 "use strict";
 
-const { Command, CommandoMessage, ArgumentType } = require("discord.js-commando");
-const { User, MessageEmbed, TextChannel, Message, MessageCollector, GuildChannel } = require("discord.js");
+const { Command, CommandoMessage } = require("discord.js-commando");
+const { User, MessageEmbed, TextChannel, MessageCollector } = require("discord.js");
 
 const { writeFile, readFile, readFileSync, fstat, writeFileSync } = require("fs");
 
@@ -62,33 +62,31 @@ module.exports = class SendConfessionCommand extends Command {
 						.once("collect", (data) => {
 							const ChannelRequest = ServerRequest.channels.cache.find((s) => s.id == ServerData[ServerId].channel);
 							if (ChannelRequest.type == "text") {
-								let countData = require("./Count.json");
-								let count = Number(countData.num);
-								countData.num = count + 1;
-								writeFileSync("./commands/confessions/Count.json", JSON.stringify(countData));
-								const ConfessEmbed = new MessageEmbed()
-									.setTitle(`Confession Number ${countData.num}`)
-									.setDescription("Send your anonymous confessions to me through a direct message, using the confess command!")
-									.setTimestamp()
-									.addField("Confession:", data.content)
-									.setColor("RANDOM");
-								castToTextChannel(ChannelRequest).send(ConfessEmbed);
-								return msg.say("Confession Posted!");
+								handlePost(data, ChannelRequest, msg);
 							}
 						});
 				} else {
 					return msg.say(`You do not appear to be a member in this server.`);
 				}
 			});
+
+		/**
+		 * @param {any} data
+		 * @param {TextChannel} ChannelRequest
+		 */
+		function handlePost(data, ChannelRequest) {
+			let countData = require("./Count.json");
+			let count = Number(countData.num);
+			countData.num = count + 1;
+			writeFileSync("./commands/confessions/Count.json", JSON.stringify(countData));
+			const ConfessEmbed = new MessageEmbed()
+				.setTitle(`Confession Number ${countData.num}`)
+				.setDescription("Send your anonymous confessions to me through a direct message, using the confess command!")
+				.setTimestamp()
+				.addField("Confession:", data.content)
+				.setColor("RANDOM");
+			ChannelRequest.send(ConfessEmbed);
+			return msg.say("Confession Posted!");
+		}
 	}
 };
-
-/**
- *
- * @param {GuildChannel} item
- * @returns {TextChannel}
- */
-function castToTextChannel(item) {
-	if (item.type == "text") return item;
-	else throw new Error("Invalid conversion to TextChannel");
-}
