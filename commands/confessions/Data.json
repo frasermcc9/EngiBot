@@ -1,0 +1,15 @@
+{
+	"625284549605064704": { "id": "625284549605064704", "name": "Official Test", "enabled": false, "channel": "702363654636699650" },
+	"475740227927801857": {
+		"id": "475740227927801857",
+		"name": "Unofficial UoA Engineering Server",
+		"enabled": true,
+		"channel": "475852060030533632"
+	},
+	"642306678502719489": {
+		"id": "642306678502719489",
+		"name": "UoA Confessions (without endymion)",
+		"enabled": true,
+		"channel": "642306678502719492"
+	}
+}

@@ -78,12 +78,21 @@ module.exports = class Util {
 
 	static tab() {
 		return "⠀⠀";
-    }
-    /**
-     * delimits a numeric string
-     * @param {string} txt 
-     */
-    static delimit(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+	}
+	/**
+	 * delimits a numeric string
+	 * @param {string} txt
+	 */
+	static delimit(x) {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
+	/**
+	 * generates a boolean based on whether a random number generated is less
+	 * than the probability. ie there is an *x* chance true is returned.
+	 * @param {Number} x chance to return true (1 always, 0 never)
+	 */
+	static chance(x) {
+		return Math.random() < x;
+	}
 };

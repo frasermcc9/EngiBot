@@ -52,7 +52,7 @@ module.exports = class SpecCommand extends Command {
 				spec = BuildProbabilityValues(n[2], n[3], n[0], n[1], n[4], n[5], n[6], n[7], n[8]);
 				break;
 			case 4:
-				spec = BuildProbabilityValues(n[3], n[2], n[1], n[4], n[0], n[5], n[6], n[7], n[8]);
+				spec = BuildProbabilityValues(n[3], n[4], n[2], n[1], n[0], n[5], n[6], n[7], n[8]);
 				break;
 			case 5:
 				spec = BuildProbabilityValues(n[6], n[3], n[5], n[4], n[2], n[1], n[0], n[7], n[8]);

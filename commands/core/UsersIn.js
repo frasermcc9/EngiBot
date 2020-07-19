@@ -5,9 +5,9 @@ const Util = require("../../Util.js");
 module.exports = class UsersInCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: "in",
-			aliases: ["membersin", "usersin", "inrole", "inrank"],
-			memberName: "in",
+			name: "usersin",
+			aliases: ["membersin", "in", "inrole", "inrank"],
+			memberName: "usersin",
 			group: "core",
 			description: "See all people in a role",
 			guildOnly: true,

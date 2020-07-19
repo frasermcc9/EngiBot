@@ -3,3 +3,4 @@ auth.json
 /commands/engineering/questionable
 /.vscode
 asset
+.env
