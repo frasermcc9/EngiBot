@@ -1,7 +1,7 @@
 const { Command, CommandoMessage } = require("discord.js-commando");
 const { MessageEmbed, Message, GuildMember } = require("discord.js");
 
-const { Fetch } = require("spacey-client");
+const { SpaceClient } = require("spacey-client");
 const Util = require("../../Util.js");
 
 module.exports = class CreditsCommand extends Command {
@@ -31,13 +31,16 @@ module.exports = class CreditsCommand extends Command {
      */
     async run(msg, { user }) {
         const discordId = user.id;
-        const client = await Fetch(discordId);
+        const client = await SpaceClient.create(discordId);
 
         const output = new MessageEmbed()
             .setTitle(`${user.nickname || user.displayName}'s Credits`)
             .setDescription(`${Util.delimit(client.Player.inventory.credits)}¢`)
             .setColor("#24c718")
             .setThumbnail(user.user.displayAvatarURL());
+
+        client.close();
+
         return msg.say(output);
     }
 };
