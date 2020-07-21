@@ -4,3 +4,5 @@ auth.json
 /.vscode
 asset
 .env
+/confessions/Count.json
+/confessions/Data.json
