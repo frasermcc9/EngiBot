@@ -1,5 +1,5 @@
 const { Command, CommandoMessage } = require("discord.js-commando");
-const { MessageEmbed, Message, GuildMember, MessageCollector } = require("discord.js");
+const { MessageEmbed, Message, GuildMember, MessageCollector, Base } = require("discord.js");
 
 const { findBestMatch } = require("string-similarity");
 
@@ -24,37 +24,78 @@ module.exports = class WarpCommand extends Command {
         const discordId = msg.author.id;
         const client = await SpaceClient.create(discordId);
 
-        const current = (await client.Player.currentLocation()).location;
-        
-        const adjacents = current.adjacent.map((n) => `${n.name}: ${n.requiredWarp} warp power required.`);
-        const adjacentNames = current.adjacent.map((m) => m.name);
+        let sMsg = await msg.say("Getting Map");
+        const m = Array.isArray(sMsg) ? sMsg[0] : sMsg;
 
-        const output = new MessageEmbed()
-            .setAuthor(`Space Travel`)
-            .setTitle(`Please select an adjacent location:`)
-            .setFooter(`Current location: ${client.Player.location}`)
-            .addField(`System`, adjacents.join("\n"), true)
-            .setColor("#f5b642")
-            .setThumbnail(msg.author.displayAvatarURL())
-            .setImage(current.imageUri);
-        msg.say(output);
-        new MessageCollector(msg.channel, (m) => m.author.id == msg.author.id, { time: 30 * 1000 }).once(
-            "collect",
-            /**@param {Message} m */ async (m) => {
-                const content = m.content;
-                const candidate = findBestMatch(content, adjacentNames).bestMatch.target;
-                const result = await client.action("warp", candidate);
+        let current;
+        let adjacents = [];
+        let adjacentNames = [];
 
-                client.close();
+        async function updateMessage() {
+            current = await client.Player.currentLocation().catch((e) => {
+                throw new Error(e);
+            });
+            adjacents = current.adjacent.map((n) => `${n.name}: ${n.requiredWarp} warp power required.`);
+            adjacentNames = current.adjacent.map((m) => m.name);
 
-                if (result.success) {
-                    return msg.say(`Successfully travelled to ${candidate}`);
-                } else {
-                    return msg.say(
-                        `Cannot travel to ${candidate}. Your warp drive is insufficient, or you do not have enough energy cells.`
-                    );
+            const output = new MessageEmbed()
+                .setAuthor(`Space Travel`)
+                .setTitle(`Please select an adjacent location:`)
+                .setDescription("Type cancel to stop. You can keep entering destinations to keep travelling.")
+                .setFooter(`Current location: ${client.Player.location}`)
+                .addField(`System`, adjacents.join("\n"), true)
+                .setColor("#f5b642")
+                .setThumbnail(msg.author.displayAvatarURL())
+                .setImage(current.imageUri);
+            m.edit(output);
+        }
+
+        await updateMessage();
+
+        let replyMessage;
+
+        const collector = new MessageCollector(msg.channel, (m) => m.author.id == msg.author.id, { time: 30 * 1000 })
+            .on(
+                "collect",
+                /**@param {Message} collectedM */ async (collectedM) => {
+                    if (collectedM.deletable) collectedM.delete();
+
+                    const content = collectedM.content;
+                    if (!/^[A-Za-z]/.test(content)) {
+                        return collector.stop();
+                    }
+
+                    adjacentNames.push("cancel");
+                    const best = findBestMatch(content, adjacentNames).bestMatch;
+                    if (best.rating < 0.2) {
+                        return msg.say("Unknown location.").then((m) => m.delete({ timeout: 1000 }));
+                    }
+                    const candidate = best.target;
+
+                    if (candidate == "cancel") {
+                        collector.stop();
+                        await m.delete();
+                        return msg.say("Warping Finished.");
+                    }
+
+                    const result = await client.action("warp", { locationName: candidate });
+
+                    if (result.success) {
+                        await client.update(result.playerStringified);
+                        await updateMessage();
+                        return;
+                    } else {
+                        if (replyMessage) await replyMessage.delete();
+                        replyMessage = msg.say(
+                            `Cannot travel to ${candidate}. Your warp drive is insufficient, or you do not have enough energy cells.`
+                        );
+                        return;
+                    }
                 }
-            }
-        );
+            )
+            .once("end", () => {
+                client.destroy();
+                if (m.deletable) m.delete();
+            });
     }
 };
