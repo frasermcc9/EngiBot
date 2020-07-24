@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outFile": "../../built/local/tsc.js",
+        "checkJs": true,
+        "allowJs": true,
+        "downlevelIteration": true
+    },
+    "include": ["./"],
+    "exclude": ["node_modules"]
+}

@@ -2,3 +2,7 @@ auth.json
 /node_modules
 /commands/engineering/questionable
 /.vscode
+asset
+.env
+/commands/confessions/Count.json
+/commands/confessions/Data.json

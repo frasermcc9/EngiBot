@@ -11,11 +11,14 @@
   "dependencies": {
     "discord.js": "^12.2.0",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
+    "dotenv": "^8.2.0",
+    "spacey-client": "file:../../../../../Projects/SpaceY-Client",
     "sqlite3": "^4.2.0",
     "stocksim": "git+https://github.com/frasermcc9/stock-sim.git",
     "string-similarity": "^4.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.1.0"
+    "@types/string-similarity": "^3.0.0",
+    "eslint": "^7.4.0"
   }
 }

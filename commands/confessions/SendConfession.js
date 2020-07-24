@@ -1,11 +1,12 @@
 "use strict";
 
 const { Command, CommandoMessage } = require("discord.js-commando");
-const { MessageEmbed, TextChannel, MessageCollector } = require("discord.js");
+const { MessageEmbed, TextChannel, MessageCollector, Util } = require("discord.js");
 
 const { readFileSync, writeFileSync } = require("fs");
 
 const { findBestMatch } = require("string-similarity");
+const { EmbedSplitter } = require("../../Util");
 
 module.exports = class SendConfessionCommand extends Command {
 	constructor(client) {
@@ -37,7 +38,10 @@ module.exports = class SendConfessionCommand extends Command {
 			.setTitle("Available Servers")
 			.setColor("#9003fc")
 			.setDescription(ServerNames.join("\n"))
-			.addField("Instructions:", "Please reply with a server (you must be in it) to send a message to.");
+			.addField(
+				"Instructions:",
+				"Please reply with a server (you must be in it) to send a message to. Whatever you type will be linked to the closest match."
+			);
 		msg.say(ServerEmbed);
 
 		/** @param {CommandoMessage} m */
@@ -49,7 +53,6 @@ module.exports = class SendConfessionCommand extends Command {
 
 			.once("collect", (data) => {
 				const ServerName = findBestMatch(data.content, ServerNames).bestMatch.target;
-
 				const ServerId = Servers.get(ServerName);
 				const ServerRequest = this.client.guilds.cache.find((s) => s.id == ServerId);
 				if (!ServerRequest) return msg.say("An error occurred with this server. Contact its admins.");
@@ -62,8 +65,13 @@ module.exports = class SendConfessionCommand extends Command {
 						})
 
 						.once("collect", (data) => {
-							const ChannelRequest = ServerRequest.channels.cache.find((s) => s.id == ServerData[ServerId].channel && s.type == "text");
-							if (!ChannelRequest) return msg.say("An error occurred with this server. Contact its admins. Its confession channel does not appear to exist.");
+							const ChannelRequest = ServerRequest.channels.cache.find(
+								(s) => s.id == ServerData[ServerId].channel && s.type == "text"
+							);
+							if (!ChannelRequest)
+								return msg.say(
+									"An error occurred with this server. Contact its admins. Its confession channel does not appear to exist."
+								);
 							ChannelRequest;
 							handlePost(data, ChannelRequest);
 						});
@@ -81,12 +89,20 @@ module.exports = class SendConfessionCommand extends Command {
 			let count = Number(countData.num);
 			countData.num = count + 1;
 			writeFileSync("./commands/confessions/Count.json", JSON.stringify(countData));
+
 			const ConfessEmbed = new MessageEmbed()
 				.setTitle(`Confession Number ${countData.num}`)
-				.setDescription("Send your anonymous confessions to me through a direct message, using the confess command!")
+				.setFooter("Send a DM to me saying 'Confess' to make an anonymous confession!")
 				.setTimestamp()
-				.addField("Confession:", data.content)
 				.setColor("RANDOM");
+
+			const StringChunks = data.content.match(/.{1,1023}/g);
+			if (StringChunks == null || StringChunks == undefined)
+				return msg.say("Some unknown error occurred when trying to send the confession.");
+			ConfessEmbed.addField("Confession:", StringChunks.shift());
+			StringChunks.forEach((chunk) => {
+				ConfessEmbed.addField("⠀", chunk, false);
+			});
 			ChannelRequest.send(ConfessEmbed);
 			return msg.say("Confession Posted!");
 		}
