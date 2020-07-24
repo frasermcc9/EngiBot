@@ -1,10 +1,6 @@
 const { Command, CommandoMessage } = require("discord.js-commando");
 const { MessageEmbed, Message, GuildMember } = require("discord.js");
 
-<<<<<<< HEAD
-const { PlayerModel } = require("space-y");
-=======
->>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc
 const Util = require("../../Util.js");
 
 module.exports = class SpacemapCommand extends Command {
