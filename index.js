@@ -2,9 +2,15 @@ require("dotenv").config();
 
 const path = require("path");
 const { readFileSync } = require("fs");
+<<<<<<< HEAD
 
 const { chance, delimit } = require("./Util.js");
 
+=======
+
+const { chance, delimit } = require("./Util.js");
+
+>>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc
 const Discord = require("discord.js");
 const { CommandoClient } = require("discord.js-commando");
 const client = new CommandoClient({
@@ -13,6 +19,7 @@ const client = new CommandoClient({
     invite: "https://discord.gg/rwFhQ9V",
     disableMentions: "everyone",
 });
+
 client.registry
     .registerDefaultTypes()
     .registerGroups([
@@ -28,6 +35,7 @@ client.registry
     .registerDefaultCommands({ unknownCommand: false })
     .registerCommandsIn(path.join(__dirname, "commands"));
 
+<<<<<<< HEAD
 const stockClient = require("stocksim");
 stockClient.Client.CreateClient({
     dbName: "stocksim",
@@ -36,6 +44,11 @@ stockClient.Client.CreateClient({
     newUserValue: 1000,
 });
 stockClient.connect();
+=======
+client.on("error", console.error);
+
+client.login(process.env.DISCORD_TOKEN);
+>>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc
 
 const {
     Setup,
@@ -85,6 +98,7 @@ client.once("ready", () => {
     client.user.setActivity(`In ${client.guilds.cache.size} guilds.`);
 });
 
+<<<<<<< HEAD
 client.on("error", console.error);
 
 client.login(process.env.DISCORD_TOKEN).then(() => {});
@@ -128,3 +142,13 @@ client.on("message", async (msg) => {
         });
     }
 });
+=======
+const stockClient = require("stocksim");
+stockClient.Client.CreateClient({
+    dbName: "stocksim",
+    iexKey: process.env.IEX_TOKEN,
+    uri: process.env.DATABASE_PATH,
+    newUserValue: 1000,
+});
+stockClient.connect();
+>>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc

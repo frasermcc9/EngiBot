@@ -12,12 +12,20 @@
     "discord.js": "^12.2.0",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
     "dotenv": "^8.2.0",
+<<<<<<< HEAD
     "space-y": "git+https://github.com/frasermcc9/SpaceY.git",
+=======
+    "spacey-client": "file:../../../../../Projects/SpaceY-Client",
+>>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc
     "sqlite3": "^4.2.0",
     "stocksim": "git+https://github.com/frasermcc9/stock-sim.git",
     "string-similarity": "^4.0.1"
   },
   "devDependencies": {
+<<<<<<< HEAD
+=======
+    "@types/string-similarity": "^3.0.0",
+>>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc
     "eslint": "^7.4.0"
   }
 }
