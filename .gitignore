@@ -3,10 +3,6 @@ auth.json
 /commands/engineering/questionable
 /.vscode
 asset
-<<<<<<< HEAD
-.env
-=======
 .env
 /commands/confessions/Count.json
 /commands/confessions/Data.json
->>>>>>> cd7ac39ba0d714571de4a03b35bb3ac876a7d4dc
